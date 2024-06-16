@@ -1,0 +1,6 @@
+@TheStartingBlockAPI_HostAddress = http://localhost:5156
+
+GET {{TheStartingBlockAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
