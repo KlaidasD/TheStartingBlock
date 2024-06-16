@@ -18,7 +18,7 @@ namespace TheStartingBlock.Services
             _resultRepository = resultRepository;
         }
 
-        public async Task AddResultAsync(Result newResult)
+        public async Task AddResultAsync(ResultInputModel newResult)
         {
             try
             {
@@ -74,30 +74,30 @@ namespace TheStartingBlock.Services
             }
         }
 
-        public async Task UpdateResultAsync(Result updatedResult)
+        public Task UpdatePositionsForEventAsync(int eventId)
         {
             try
             {
-                Log.Information("Calling UpdateResultAsync from resultRepository at {Time}", DateTime.UtcNow);
-                await _resultRepository.UpdateResultAsync(updatedResult);
+                Log.Information("Calling UpdatePositionsForEventAsync from resultRepository at {Time}", DateTime.UtcNow);
+                return _resultRepository.UpdatePositionsForEventAsync(eventId);
             }
             catch (Exception ex)
             {
-                Log.Error("Error calling UpdateResultAsync from resultRepository: {Error}", ex.Message);
+                Log.Error("Error calling UpdatePositionsForEventAsync from resultRepository: {Error}", ex.Message);
                 throw;
             }
         }
 
-        public async Task<bool> GenerateRandomResultsAsync(int eventId, List<int> participantIds)
+        public async Task UpdateResultAsync(ResultInputModel newResult)
         {
             try
             {
-                Log.Information("Calling GenerateRandomResultsAsync from resultRepository at {Time}", DateTime.UtcNow);
-                return await _resultRepository.GenerateRandomResultsAsync(eventId, participantIds);
+                Log.Information("Calling UpdateResultAsync from resultRepository at {Time}", DateTime.UtcNow);
+                await _resultRepository.UpdateResultAsync(newResult);
             }
             catch (Exception ex)
             {
-                Log.Error("Error calling GenerateRandomResultsAsync from resultRepository: {Error}", ex.Message);
+                Log.Error("Error calling UpdateResultAsync from resultRepository: {Error}", ex.Message);
                 throw;
             }
         }

@@ -19,7 +19,7 @@ namespace TheStartingBlockAPI.Controllers
         }
 
         [HttpPost("AddResult")]
-        public async Task AddResult([FromForm] Result newResult)
+        public async Task AddResult([FromForm] ResultInputModel newResult)
         {
             try
             {
@@ -64,12 +64,12 @@ namespace TheStartingBlockAPI.Controllers
         }
 
         [HttpPut("UpdateResult")]
-        public async Task UpdateResult([FromForm] Result result)
+        public async Task UpdateResult([FromForm] ResultInputModel newResult)
         {
             try
             {
                 Log.Information("Endpoint UpdateResult called at {Time}", DateTime.UtcNow);
-                await _resultService.UpdateResultAsync(result);
+                await _resultService.UpdateResultAsync(newResult);
             }
             catch (Exception ex)
             {
@@ -89,21 +89,6 @@ namespace TheStartingBlockAPI.Controllers
             catch (Exception ex)
             {
                 Log.Error("Error calling endpoint DeleteResult: {Error}", ex.Message);
-                throw;
-            }
-        }
-
-        [HttpPost("GenerateRandomResults")]
-        public async Task<bool> GenerateRandomResults(int eventId, List<int> participantIds)
-        {
-            try
-            {
-                Log.Information("Endpoint GenerateRandomResults called at {Time}", DateTime.UtcNow);
-                return await _resultService.GenerateRandomResultsAsync(eventId, participantIds);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Error calling endpoint GenerateRandomResults: {Error}", ex.Message);
                 throw;
             }
         }

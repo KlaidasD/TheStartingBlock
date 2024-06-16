@@ -13,9 +13,9 @@ namespace TheStartingBlock.Contracts
     {
         Task<List<Result>> GetResultsAsync();
         Task<Result> GetResultByIdAsync(int resultId);
-        Task AddResultAsync(Result newResult);
-        Task UpdateResultAsync(Result updatedResult);
+        Task AddResultAsync(ResultInputModel newResultInput);
+        Task UpdateResultAsync(ResultInputModel newResult);
         Task DeleteResultAsync(int resultId);
-        Task<bool> GenerateRandomResultsAsync(int eventId, List<int> participantIds);
+        Task UpdatePositionsForEventAsync(int eventId);
     }
 }

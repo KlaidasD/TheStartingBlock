@@ -53,6 +53,7 @@ namespace TheStartingBlock.Models
 
         public List<EventParticipants> EventParticipants { get; set; } = new List<EventParticipants>();
         public List<Result> Results { get; set; } = new List<Result>();
+        
     }
 
 }

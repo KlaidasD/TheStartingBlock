@@ -22,20 +22,95 @@ namespace TheStartingBlock.Repositories
             _context = context;
             _mongoRepository = mongoRepository;
         }
-        public async Task AddResultAsync(Result newResult)
+        public async Task AddResultAsync(ResultInputModel newResultInput)
         {
             try
             {
-                Log.Information("Adding new result with {Id} at {Time}", newResult.ResultId, DateTime.UtcNow);
+                if (newResultInput == null || newResultInput.ResultValue <= 0)
+                {
+                    throw new ArgumentException("Invalid result input");
+                }
+
+                var @event = await _context.Events.FindAsync(newResultInput.EventId);
+                var participant = await _context.Participants.FindAsync(newResultInput.ParticipantId);
+                if (@event == null || participant == null)
+                {
+                    throw new ArgumentException("Event or participant not found");
+                }
+
+                var newResult = new Result
+                {
+                    Event = @event,
+                    Participant = participant,
+                    ResultValue = newResultInput.ResultValue,
+                    Position = 1
+                };
+
                 _context.Results.Add(newResult);
+                await _context.SaveChangesAsync();
+
+                await UpdatePositionsForEventAsync(newResultInput.EventId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error adding result: {Error}", ex.Message);
+                throw;
+            }
+        }
+
+        public async Task UpdatePositionsForEventAsync(int eventId)
+        {
+            try
+            {
+                var eventType = await _context.Events
+                    .Where(e => e.EventId == eventId)
+                    .Select(e => e.Type)
+                    .FirstOrDefaultAsync();
+
+                var results = await _context.Results
+                    .Where(r => r.Event.EventId == eventId)
+                    .ToListAsync();
+
+                switch (eventType)
+                {
+                    case EventType._1KM:
+                        results = results.OrderBy(r => r.ResultValue).ToList();
+                        break;
+                    case EventType._5KM:
+                        results = results.OrderBy(r => r.ResultValue).ToList();
+                        break;
+                    case EventType._10KM:
+                        results = results.OrderBy(r => r.ResultValue).ToList();
+                        break;
+                    case EventType.HalfMarathon:
+                        results = results.OrderBy(r => r.ResultValue).ToList();
+                        break;
+                    case EventType.Marathon:
+                        results = results.OrderBy(r => r.ResultValue).ToList();
+                        break;
+                    case EventType.HighJump:
+                        results = results.OrderByDescending(r => r.ResultValue).ToList();
+                        break;
+                    case EventType.LongJump:
+                        results = results.OrderByDescending(r => r.ResultValue).ToList();
+                        break;
+                    default:
+                        Log.Information("No sorting logic defined for event type {Type}", eventType);
+                        break;
+                }
+
+                for (int i = 0; i < results.Count; i++)
+                {
+                    results[i].Position = i + 1;
+                }
+
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                Log.Error("Error adding result with id {Id}: {Error}", newResult.ResultId, ex.Message);
+                Log.Error("Error updating positions for event with id {Id}: {Error}", eventId, ex.Message);
                 throw;
             }
-
         }
 
         public async Task DeleteResultAsync(int resultId)
@@ -94,10 +169,21 @@ namespace TheStartingBlock.Repositories
                     results = await _context.Results.ToListAsync();
                     if (results != null)
                     {
-                        Log.Information("Results found in MSSQL, adding to mongoDB");
-                        foreach (var r in results)
+                        Log.Information("Results not found in mongoDB, trying to get from MSSQL");
+
+                        results = await _context.Results
+                            .Include(r => r.Event)
+                            .Include(r => r.Participant)
+                            .ToListAsync();
+
+                        if (results != null && results.Any())
                         {
-                            await _mongoRepository.AddResultAsync(r);
+                            Log.Information("Results found in MSSQL, adding to mongoDB");
+
+                            foreach (var r in results)
+                            {
+                                await _mongoRepository.AddResultAsync(r);
+                            }
                         }
                     }
                 }
@@ -110,67 +196,56 @@ namespace TheStartingBlock.Repositories
             }
         }
 
-        public async Task UpdateResultAsync(Result updatedResult)
+        public async Task UpdateResultAsync(ResultInputModel updatedResultInput)
         {
             try
             {
-                Log.Information("Updating result with id {Id} at {Time}", updatedResult.ResultId, DateTime.UtcNow);
-                _context.Results.Update(updatedResult);
+                Log.Information("Updating result with id {Id} at {Time}", updatedResultInput.ResultId, DateTime.UtcNow);
+
+                var existingResult = await _context.Results
+                    .Include(r => r.Event)
+                    .Include(r => r.Participant)
+                    .FirstOrDefaultAsync(r => r.ResultId == updatedResultInput.ResultId);
+
+                if (existingResult == null)
+                {
+                    throw new ArgumentException($"Result with id {updatedResultInput.ResultId} not found");
+                }
+
+                existingResult.ResultValue = updatedResultInput.ResultValue;
+
+                if (updatedResultInput.EventId != null)
+                {
+                    var @event = await _context.Events.FindAsync(updatedResultInput.EventId);
+                    if (@event == null)
+                    {
+                        throw new ArgumentException($"Event with id {updatedResultInput.EventId} not found");
+                    }
+                    existingResult.Event = @event;
+                }
+
+                if (updatedResultInput.ParticipantId != null)
+                {
+                    var participant = await _context.Participants.FindAsync(updatedResultInput.ParticipantId);
+                    if (participant == null)
+                    {
+                        throw new ArgumentException($"Participant with id {updatedResultInput.ParticipantId} not found");
+                    }
+                    existingResult.Participant = participant;
+                }
+
+                await UpdatePositionsForEventAsync(updatedResultInput.EventId);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                Log.Error("Error updating result with id {Id}: {Error}", updatedResult.ResultId, ex.Message);
+                Log.Error("Error updating result with id {Id}: {Error}", updatedResultInput.ResultId, ex.Message);
                 throw;
             }
-        }
-
-        public async Task<bool> GenerateRandomResultsAsync(int eventId, List<int> participantIds)
-        {
-            var random = new Random();
-
-            try
-            {
-                Log.Information("Generating random results for event {EventId} at {Time}", eventId, DateTime.UtcNow);
-                foreach (int participantId in participantIds)
-                {
-                    // Generate random result value (e.g., for running events)
-                    double randomResultValue = 0.0;
-                    if (eventId == (int)EventType._1KM || eventId == (int)EventType._5KM || eventId == (int)EventType._10KM)
-                    {
-                        randomResultValue = random.NextDouble() * 10; // Random value between 0 and 10 (for example)
-                    }
-                    else if (eventId == (int)EventType.LongJump || eventId == (int)EventType.HighJump)
-                    {
-                        randomResultValue = random.NextDouble() * 5; // Random value between 0 and 5 (for example)
-                    }
-                    else if (eventId == (int)EventType.HalfMarathon)
-                    {
-                        randomResultValue = random.NextDouble() * 21; // Random value between 0 and 21 (for example)
-                    }
-                    else if (eventId == (int)EventType.Marathon)
-                    {
-                        randomResultValue = random.NextDouble() * 42; // Random value between 0 and 42 (for example)
-                    }
-
-                    var result = new Result
-                    {
-                        EventId = eventId,
-                        ParticipantId = participantId,
-                        ResultValue = (decimal)randomResultValue
-                    };
-
-                    _context.Results.Add(result);
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Error generating random results: {Error}", ex.Message);
-                throw;
-            }
-
         }
     }
 }
+
+    
+
 

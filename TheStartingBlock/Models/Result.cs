@@ -16,18 +16,17 @@ namespace TheStartingBlock.Models
         [Key]
         [BsonElement]
         [JsonPropertyName("id")]
-        public int ResultId { get; set; }
-        [ForeignKey("Event")]
-        public int EventId { get; set; }
+        public int? ResultId { get; set; }
+        [ForeignKey("eventId")]
         public Event Event { get; set; }
-        [ForeignKey("Participant")]
-        public int ParticipantId { get; set; }
+        [ForeignKey("participantId")]
         public Participant Participant { get; set; }
         public decimal ResultValue { get; set; }
         public int Position { get; set; }
 
         [BsonId]
         [NotMapped]
-        public ObjectId _id { get; set; }
+        [BsonIgnoreIfDefault]
+        public ObjectId? _id { get; set; }
     }
 }
