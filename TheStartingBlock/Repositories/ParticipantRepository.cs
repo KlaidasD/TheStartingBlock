@@ -62,14 +62,12 @@ namespace TheStartingBlock.Repositories
             {
                 Log.Information("Getting participant with PersonalId {PersonalId} from MongoDB at {Time}", personalId, DateTime.UtcNow);
 
-                // Try to get participant from MongoDB
                 var participant = await _mongoRepository.GetParticipantByPersonalIdAsync(personalId);
 
                 if (participant == null)
                 {
                     Log.Information("Participant not found in MongoDB, trying to search in MSSQL");
 
-                    // If not found in MongoDB, search in MSSQL
                     participant = await _context.Participants.FirstOrDefaultAsync(p => p.PersonalCode == personalId);
 
                     if (participant != null)
@@ -79,7 +77,7 @@ namespace TheStartingBlock.Repositories
                     }
                 }
 
-                return participant; // Return the found participant or null if not found
+                return participant;
             }
             catch (Exception ex)
             {
