@@ -21,10 +21,12 @@ builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
 builder.Services.AddScoped<IResultRepository, ResultRepository>();
 
 
+
 //Services
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<IResultService, ResultService>();
+builder.Services.AddSingleton<CacheControlService>();
 
 
 builder.Services.AddSingleton<IMongoClient, MongoClient>(sp =>
@@ -52,5 +54,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+var cacheControlService = app.Services.GetRequiredService<CacheControlService>();
+_ = cacheControlService.RunCleanupJob();
 
 app.Run();
