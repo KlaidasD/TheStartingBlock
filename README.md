@@ -22,7 +22,7 @@ POST\
 
 Technologies Used\
 Framework: .NET Core\
-Database: SQL Server\
+Databases: SQL Server and mongoDB for caching.
 ORM: Entity Framework Core\
 Logging: Serilog\
 API Documentation: Swagger
