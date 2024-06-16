@@ -20,9 +20,9 @@ POST\
 /controller/AddParticipantToEvent\
 
 
-Technologies Used
-Framework: .NET Core
-Database: SQL Server
-ORM: Entity Framework Core
-Logging: Serilog
+Technologies Used\
+Framework: .NET Core\
+Database: SQL Server\
+ORM: Entity Framework Core\
+Logging: Serilog\
 API Documentation: Swagger
