@@ -1,8 +1,8 @@
-# The Starting Block V3
+# The Starting Block V3.1
 
 This project is an API for managing events and participants called "The Starting Block". It provides endpoints to manage Events, Participants and Results.
 
-Functionality (V1) (pushed at : 2024/06/16 11:30AM) of the API includes the following features : CRUD operations for events including creation, retrieval, retrieval by ID, update and adding participants to events.
+Functionality (V1) : the API includes the following features : CRUD operations for events including creation, retrieval, retrieval by ID, update and adding participants to events.
 
 End points:\
 POST\
@@ -18,7 +18,7 @@ DELETE\
 POST\
 /controller/AddParticipantToEvent
 
-Functionality (V2) (pushed at : 2024/06/16 12PM) of the API adds the following features : CRUD operations for participants including creation, retrieval, retrieval by personalId, update and generating random participants for testing purposes.
+(V2) : adds the following features : CRUD operations for participants including creation, retrieval, retrieval by personalId, update and generating random participants for testing purposes.
 
 End points:
 POST\
@@ -34,9 +34,9 @@ DELETE\
 POST\
 /controller/GenerateRandomParticipant
 
-Functionality (V3) (pushed at : 2024/06/16 13:30PM) of the API adds the following features : CRUD operations for results including creation, retrieval, retrieval by resultId and update.
+(V3) : adds the following features : CRUD operations for results including creation, retrieval, retrieval by resultId and update.
 
-End points:
+End points:\
 POST\
 /controller/AddResult\
 GET\
@@ -47,6 +47,8 @@ PUT\
 /controller/UpdateResult\
 DELETE\
 /controller/DeleteResult\
+
+(V3.1) : added cache control service that cleans cache from mongoDB every 2 minutes of the API running.
 
 
 
