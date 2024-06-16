@@ -1,4 +1,4 @@
-# The Starting Block V3.1
+# The Starting Block V3.2
 
 This project is an API for managing events and participants called "The Starting Block". It provides endpoints to manage Events, Participants and Results.
 
