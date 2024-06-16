@@ -36,7 +36,7 @@ POST\
 
 (V3) : adds the following features : CRUD operations for results including creation, retrieval, retrieval by resultId and update.
 
-End points:
+End points:\
 POST\
 /controller/AddResult\
 GET\
