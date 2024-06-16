@@ -56,28 +56,34 @@ namespace TheStartingBlock.Repositories
             }
         }
 
-        public async Task<Participant> GetParticipantByPersonalIdAsync(int participantId)
+        public async Task<Participant> GetParticipantByPersonalIdAsync(string personalId)
         {
             try
             {
-                Log.Information("Getting participant with id {Id} from mongoDB at {Time}", participantId, DateTime.UtcNow);
-                var participant = await _mongoRepository.GetParticipantByIdAsync(participantId);
-                if(participant == null)
+                Log.Information("Getting participant with PersonalId {PersonalId} from MongoDB at {Time}", personalId, DateTime.UtcNow);
+
+                // Try to get participant from MongoDB
+                var participant = await _mongoRepository.GetParticipantByPersonalIdAsync(personalId);
+
+                if (participant == null)
                 {
-                    Log.Information("Participant not found in mongoDB, trying to search in MSSQL");
-                    participant = await _context.Participants.FindAsync(participantId);
+                    Log.Information("Participant not found in MongoDB, trying to search in MSSQL");
+
+                    // If not found in MongoDB, search in MSSQL
+                    participant = await _context.Participants.FirstOrDefaultAsync(p => p.PersonalCode == personalId);
+
                     if (participant != null)
                     {
-                        Log.Information("Participant found in MSSQL, adding to mongoDB");
+                        Log.Information("Participant found in MSSQL, adding to MongoDB");
                         await _mongoRepository.AddParticipantAsync(participant);
                     }
                 }
 
-                return await _context.Participants.FindAsync(participantId);
+                return participant; // Return the found participant or null if not found
             }
             catch (Exception ex)
             {
-                Log.Error("Error getting participant with id {Id}: {Error}", participantId, ex.Message);
+                Log.Error("Error getting participant with PersonalId {PersonalId}: {Error}", personalId, ex.Message);
                 throw;
             }
         }

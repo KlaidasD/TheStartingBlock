@@ -57,9 +57,9 @@ namespace TheStartingBlock.Repositories
             return await _Participants.Find(participants => true).ToListAsync();
         }
 
-        public async Task<Participant> GetParticipantByIdAsync(int participantId)
+        public async Task<Participant> GetParticipantByPersonalIdAsync(string personalId)
         {
-            return await _Participants.Find<Participant>(participants => participants.ParticipantId == participantId).FirstOrDefaultAsync();
+            return await _Participants.Find<Participant>(participants => participants.PersonalCode == personalId).FirstOrDefaultAsync();
         }
        
         public async Task<List<Result>> GetResultsAsync()

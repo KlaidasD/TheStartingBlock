@@ -22,6 +22,7 @@ namespace TheStartingBlock.Models
 
         [BsonId]
         [NotMapped]
+        [BsonIgnoreIfDefault]
         public ObjectId _id { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace TheStartingBlock.Contracts
         Task<Event> GetEventByIdAsync(int eventId);
         Task AddEventAsync(Event newEvent);
         Task<List<Participant>> GetParticipantsAsync();
-        Task<Participant> GetParticipantByIdAsync(int participantId);
+        Task<Participant> GetParticipantByPersonalIdAsync(string personalId);
         Task AddParticipantAsync(Participant newParticipant);
         Task<List<Result>> GetResultsAsync();
         Task<Result> GetResultByIdAsync(int resultId);

@@ -10,7 +10,7 @@ namespace TheStartingBlock.Contracts
     public interface IParticipantRepository
     {
         Task<List<Participant>> GetParticipantsAsync();
-        Task<Participant> GetParticipantByPersonalIdAsync(int participantId);
+        Task<Participant> GetParticipantByPersonalIdAsync(string personalId);
         Task AddParticipantAsync(Participant newParticipant);
         Task UpdateParticipantAsync(Participant updatedParticipant);
         Task DeleteParticipantAsync(int participantId);

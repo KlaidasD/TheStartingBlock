@@ -48,13 +48,13 @@ namespace TheStartingBlockAPI.Controllers
             }
         }
 
-        [HttpGet("GetParticipantByPersonalId")]
-        public async Task<Participant> GetParticipantByPersonalId([FromForm] int participantId)
+        [HttpPost("GetParticipantByPersonalId")]
+        public async Task<Participant> GetParticipantByPersonalId([FromForm] string personalId)
         {
             try
             {
                 Log.Information("Endpoint GetParticipantByPersonalId called at {Time}", DateTime.UtcNow);
-                return await _participantService.GetParticipantByPersonalIdAsync(participantId);
+                return await _participantService.GetParticipantByPersonalIdAsync(personalId);
             }
             catch (Exception ex)
             {

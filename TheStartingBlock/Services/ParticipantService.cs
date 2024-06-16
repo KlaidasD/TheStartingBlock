@@ -46,12 +46,12 @@ namespace TheStartingBlock.Services
             }
         }
 
-        public async Task<Participant> GetParticipantByPersonalIdAsync(int participantId)
+        public async Task<Participant> GetParticipantByPersonalIdAsync(string personalId)
         {
             try
             {
                 Log.Information("Calling GetParticipantByPersonalIdAsync from participantRepository at {Time}", DateTime.UtcNow);
-                return await _participantRepository.GetParticipantByPersonalIdAsync(participantId);
+                return await _participantRepository.GetParticipantByPersonalIdAsync(personalId);
             }
             catch (Exception ex)
             {
