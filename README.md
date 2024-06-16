@@ -34,9 +34,9 @@ DELETE\
 POST\
 /controller/GenerateRandomParticipant
 
-Technologies Used
-Framework: .NET Core
-Databases: SQL Server and mongoDB for caching.
-ORM: Entity Framework Core
-Logging: Serilog
+Technologies Used\
+Framework: .NET Core\
+Databases: SQL Server and mongoDB for caching.\
+ORM: Entity Framework Core\
+Logging: Serilog\
 API Documentation: Swagger
