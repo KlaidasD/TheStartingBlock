@@ -34,7 +34,7 @@ DELETE\
 POST\
 /controller/GenerateRandomParticipant
 
-Functionality (V3) (pushed at : 2024/06/16 13:30PM) of the API adds includes the following features : CRUD operations for results including creation, retrieval, retrieval by resultId and update.
+Functionality (V3) (pushed at : 2024/06/16 13:30PM) of the API adds the following features : CRUD operations for results including creation, retrieval, retrieval by resultId and update.
 
 End points:
 POST\
