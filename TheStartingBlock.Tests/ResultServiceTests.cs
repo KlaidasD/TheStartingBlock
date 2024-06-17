@@ -123,17 +123,20 @@ namespace ResultUnitTestai
         }
 
         [Fact]
-        public async Task GenerateReportAsync_test()
+        public async Task GenerateReportAsync_Test()
         {
             // Arrange
+            string Report = "Report content.";
             _resultRepoMock.Setup(x => x.GenerateReportAsync())
-                           .Returns((Task<string>)Task.CompletedTask); 
+                           .ReturnsAsync(Report);
 
             // Act
-            await _resultService.GenerateReportAsync();
+            var result = await _resultService.GenerateReportAsync();
 
             // Assert
             _resultRepoMock.Verify(x => x.GenerateReportAsync(), Times.Once);
+            Assert.Equal(Report, result);
         }
+
     }
 }
