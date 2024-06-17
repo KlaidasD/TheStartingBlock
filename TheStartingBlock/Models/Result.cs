@@ -24,6 +24,7 @@ namespace TheStartingBlock.Models
         [ForeignKey("participantId")]
         [BsonElement("participantId")]
         [JsonPropertyName("participantId")]
+        [BsonIgnore]
         public Participant Participant { get; set; }
         [BsonElement("resultValue")]
         [JsonPropertyName("resultValue")]

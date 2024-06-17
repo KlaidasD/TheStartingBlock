@@ -137,10 +137,25 @@ namespace TheStartingBlock.Repositories
         {
             try
             {
-                    Log.Information("Results not found in mongoDB trying to search in MSSQL");
-                    var results = await _context.Results.Include(x => x.Event).Include(x => x.Participant).FirstOrDefaultAsync(x => x.ResultId == resultId);
+                var mongoResult = await _mongoRepository.GetResultByIdAsync(resultId);
+                if (mongoResult != null)
+                {
+                    Log.Information("Result found in MongoDB");
+                    return mongoResult;
+                }
 
-                return results;
+                Log.Information("Result not found in MongoDB, trying to search in MSSQL");
+                var sqlResult = await _context.Results
+                    .Include(x => x.Event)
+                    .Include(x => x.Participant)
+                    .FirstOrDefaultAsync(x => x.ResultId == resultId);
+
+                if (sqlResult != null)
+                {
+                    await _mongoRepository.AddResultAsync(sqlResult);
+                }
+
+                return sqlResult;
             }
             catch (Exception ex)
             {
@@ -153,18 +168,28 @@ namespace TheStartingBlock.Repositories
         {
             try
             {
-                    Log.Information("Trying to get results from MSSQL");
-                    var results = await _context.Results.ToListAsync();
-                    if (results != null)
-                    {
-                        Log.Information("Results not found in mongoDB, trying to get from MSSQL");
+                var mongoResults = await _mongoRepository.GetResultsAsync();
+                if (mongoResults != null && mongoResults.Any())
+                {
+                    Log.Information("Results found in MongoDB");
+                    return mongoResults;
+                }
 
-                        results = await _context.Results
-                            .Include(r => r.Event)
-                            .Include(r => r.Participant)
-                            .ToListAsync();
+                Log.Information("Results not found in MongoDB, trying to get from MSSQL");
+                var sqlResults = await _context.Results
+                    .Include(r => r.Event)
+                    .Include(r => r.Participant)
+                    .ToListAsync();
+
+                if (sqlResults != null && sqlResults.Any())
+                {
+                    foreach (var result in sqlResults)
+                    {
+                        await _mongoRepository.AddResultAsync(result);
                     }
-                return results;
+                }
+
+                return sqlResults;
             }
             catch (Exception ex)
             {
@@ -250,7 +275,6 @@ namespace TheStartingBlock.Repositories
                 {
                     sb.AppendLine($"Result ID: {result.ResultId}, Event ID: {result.Event.EventId}, Participant ID: {result.Participant.ParticipantId}, Position: {result.Position}");
                 }
-
                 return sb.ToString();
             }
             catch (Exception ex)
