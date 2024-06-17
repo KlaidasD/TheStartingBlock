@@ -211,7 +211,7 @@ namespace TheStartingBlock.Repositories
 
                 if (existingResult == null)
                 {
-                    throw new ArgumentException($"Result with id {updatedResultInput.ResultId} not found");
+                    Log.Error("Result with id {Id} not found", updatedResultInput.ResultId);
                 }
 
                 existingResult.ResultValue = updatedResultInput.ResultValue;
@@ -221,7 +221,7 @@ namespace TheStartingBlock.Repositories
                     var @event = await _context.Events.FindAsync(updatedResultInput.EventId);
                     if (@event == null)
                     {
-                        throw new ArgumentException($"Event with id {updatedResultInput.EventId} not found");
+                        Log.Error("Event with id {Id} not found", updatedResultInput.EventId);
                     }
                     existingResult.Event = @event;
                 }
@@ -231,7 +231,7 @@ namespace TheStartingBlock.Repositories
                     var participant = await _context.Participants.FindAsync(updatedResultInput.ParticipantId);
                     if (participant == null)
                     {
-                        throw new ArgumentException($"Participant with id {updatedResultInput.ParticipantId} not found");
+                        Log.Error("Participant not found.");
                     }
                     existingResult.Participant = participant;
                 }
