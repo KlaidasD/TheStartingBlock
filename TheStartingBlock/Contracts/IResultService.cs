@@ -16,5 +16,6 @@ namespace TheStartingBlock.Contracts
         Task UpdateResultAsync(ResultInputModel newResult);
         Task DeleteResultAsync(int resultId);
         Task UpdatePositionsForEventAsync(int eventId);
+        Task<string> GenerateReportAsync();
     }
 }

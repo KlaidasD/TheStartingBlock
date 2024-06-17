@@ -92,5 +92,20 @@ namespace TheStartingBlockAPI.Controllers
                 throw;
             }
         }
+
+        [HttpGet("GenerateReport")]
+        public async Task<string> GenerateReport()
+        {
+            try
+            {
+                Log.Information("Endpoint GenerateReport called at {Time}", DateTime.UtcNow);
+                return await _resultService.GenerateReportAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error calling endpoint GenerateReport: {Error}", ex.Message);
+                throw;
+            }
+        }
     }
 }

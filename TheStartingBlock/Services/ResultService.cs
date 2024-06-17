@@ -46,6 +46,20 @@ namespace TheStartingBlock.Services
             }
         }
 
+        public Task<string> GenerateReportAsync()
+        {
+            try
+            {
+                Log.Information("Calling GenerateReportAsync from resultRepository at {Time}", DateTime.UtcNow);
+                return _resultRepository.GenerateReportAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error calling GenerateReportAsync from resultRepository: {Error}", ex.Message);
+                throw;
+            }
+        }
+
         public async Task<Result> GetResultByIdAsync(int resultId)
         {
             try
@@ -101,5 +115,7 @@ namespace TheStartingBlock.Services
                 throw;
             }
         }
+
+
     }
 }
