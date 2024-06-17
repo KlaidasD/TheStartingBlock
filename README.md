@@ -1,4 +1,4 @@
-# The Starting Block V3.2
+# The Starting Block V3.3
 
 This project is an API for managing events and participants called "The Starting Block". It provides endpoints to manage Events, Participants and Results.
 
@@ -51,6 +51,8 @@ DELETE\
 (V3.1) : added cache control service that cleans cache from mongoDB every 2 minutes of the API running.
 
 (V3.2) : added unit tests for the API services.
+
+(V3.3) : added generate report end point.
 
 Technologies Used\
 Framework: .NET Core\
