@@ -33,7 +33,7 @@ namespace ResultUnitTestai
             };
 
             _resultRepoMock.Setup(x => x.AddResultAsync(It.IsAny<ResultInputModel>()))
-                           .Returns(Task.CompletedTask); // Mock void method
+                           .Returns(Task.CompletedTask); 
 
             // Act
             await _resultService.AddResultAsync(newResult);
@@ -49,7 +49,7 @@ namespace ResultUnitTestai
             int resultIdToDelete = 1;
 
             _resultRepoMock.Setup(x => x.DeleteResultAsync(resultIdToDelete))
-                           .Returns(Task.CompletedTask); // Mock void method
+                           .Returns(Task.CompletedTask); 
 
             // Act
             await _resultService.DeleteResultAsync(resultIdToDelete);
@@ -113,13 +113,27 @@ namespace ResultUnitTestai
             };
 
             _resultRepoMock.Setup(x => x.UpdateResultAsync(It.IsAny<ResultInputModel>()))
-                           .Returns(Task.CompletedTask); // Mock void method
+                           .Returns(Task.CompletedTask); 
 
             // Act
             await _resultService.UpdateResultAsync(updatedResult);
 
             // Assert
             _resultRepoMock.Verify(x => x.UpdateResultAsync(It.IsAny<ResultInputModel>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GenerateReportAsync_test()
+        {
+            // Arrange
+            _resultRepoMock.Setup(x => x.GenerateReportAsync())
+                           .Returns((Task<string>)Task.CompletedTask); 
+
+            // Act
+            await _resultService.GenerateReportAsync();
+
+            // Assert
+            _resultRepoMock.Verify(x => x.GenerateReportAsync(), Times.Once);
         }
     }
 }
