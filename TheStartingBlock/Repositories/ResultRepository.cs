@@ -223,32 +223,41 @@ namespace TheStartingBlock.Repositories
 
         public async Task<string> GenerateReportAsync()
         {
-            var sb = new StringBuilder();
-
-            var events = await _context.Events.ToListAsync();
-            sb.AppendLine("Events Report:");
-            foreach (var ev in events)
+            try
             {
-                sb.AppendLine($"Event ID: {ev.EventId}, Name: {ev.Name}, Start Date: {ev.StartDate}, Location: {ev.Location}");
-            }
-            sb.AppendLine();
+                Log.Information("Generating report at {Time}", DateTime.UtcNow);
+                var sb = new StringBuilder();
 
-            var participants = await _context.Participants.ToListAsync();
-            sb.AppendLine("Participants Report:");
-            foreach (var participant in participants)
+                var events = await _context.Events.ToListAsync();
+                sb.AppendLine("Events Report:");
+                foreach (var ev in events)
+                {
+                    sb.AppendLine($"Event ID: {ev.EventId}, Name: {ev.Name}, Start Date: {ev.StartDate}, Location: {ev.Location}");
+                }
+                sb.AppendLine();
+
+                var participants = await _context.Participants.ToListAsync();
+                sb.AppendLine("Participants Report:");
+                foreach (var participant in participants)
+                {
+                    sb.AppendLine($"Participant ID: {participant.ParticipantId}, Name: {participant.Name}, Birth Year: {participant.BirthYear}, Gender: {participant.Gender}");
+                }
+                sb.AppendLine();
+
+                var results = await _context.Results.ToListAsync();
+                sb.AppendLine("Results Report:");
+                foreach (var result in results)
+                {
+                    sb.AppendLine($"Result ID: {result.ResultId}, Event ID: {result.Event.EventId}, Participant ID: {result.Participant.ParticipantId}, Position: {result.Position}");
+                }
+
+                return sb.ToString();
+            }
+            catch (Exception ex)
             {
-                sb.AppendLine($"Participant ID: {participant.ParticipantId}, Name: {participant.Name}, Birth Year: {participant.BirthYear}, Gender: {participant.Gender}");
+                Log.Error("Error generating report: {Error}", ex.Message);
+                throw;
             }
-            sb.AppendLine();
-
-            var results = await _context.Results.ToListAsync();
-            sb.AppendLine("Results Report:");
-            foreach (var result in results)
-            {
-                sb.AppendLine($"Result ID: {result.ResultId}, Event ID: {result.Event.EventId}, Participant ID: {result.Participant.ParticipantId}, Position: {result.Position}");
-            }
-
-            return sb.ToString();
         }
     }
 }
