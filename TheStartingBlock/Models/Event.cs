@@ -49,9 +49,12 @@ namespace TheStartingBlock.Models
         [BsonId]
         [NotMapped]
         [BsonIgnoreIfDefault]
+        [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId? _id { get; set; }
 
+        [BsonIgnore]
         public List<EventParticipants> EventParticipants { get; set; } = new List<EventParticipants>();
+        [BsonIgnore]
         public List<Result> Results { get; set; } = new List<Result>();
         
     }

@@ -136,18 +136,9 @@ namespace TheStartingBlock.Repositories
         {
             try
             {
-                Log.Information("Trying to get results with id {Id} from mongoDB at {Time}", resultId, DateTime.UtcNow);
-                var results = await _mongoRepository.GetResultByIdAsync(resultId);
-                if (results == null)
-                {
                     Log.Information("Results not found in mongoDB trying to search in MSSQL");
-                    results = await _context.Results.FindAsync(resultId);
-                    if (results != null)
-                    {
-                        Log.Information("Results found in MSSQL, adding to mongoDB");
-                        await _mongoRepository.AddResultAsync(results);
-                    }
-                }
+                    var results = await _context.Results.Include(x => x.Event).Include(x => x.Participant).FirstOrDefaultAsync(x => x.ResultId == resultId);
+
                 return results;
             }
             catch (Exception ex)
@@ -161,12 +152,8 @@ namespace TheStartingBlock.Repositories
         {
             try
             {
-                Log.Information("Trying to get results from mongoDB at {Time}", DateTime.UtcNow);
-                var results = await _mongoRepository.GetResultsAsync();
-                if (results == null || results.Count == 0)
-                {
-                    Log.Information("Results not found in mongoDB, trying to get from MSSQL");
-                    results = await _context.Results.ToListAsync();
+                    Log.Information("Trying to get results from MSSQL");
+                    var results = await _context.Results.ToListAsync();
                     if (results != null)
                     {
                         Log.Information("Results not found in mongoDB, trying to get from MSSQL");
@@ -175,20 +162,11 @@ namespace TheStartingBlock.Repositories
                             .Include(r => r.Event)
                             .Include(r => r.Participant)
                             .ToListAsync();
-
-                        if (results != null && results.Any())
-                        {
-                            Log.Information("Results found in MSSQL, adding to mongoDB");
-
-                            foreach (var r in results)
-                            {
-                                await _mongoRepository.AddResultAsync(r);
-                            }
-                        }
                     }
-                }
                 return results;
             }
+                
+            
             catch (Exception ex)
             {
                 Log.Error("Error getting results: {Error}", ex.Message);

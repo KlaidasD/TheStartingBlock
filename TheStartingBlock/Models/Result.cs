@@ -14,19 +14,29 @@ namespace TheStartingBlock.Models
     public class Result
     {
         [Key]
-        [BsonElement]
+        [BsonElement("id")]
         [JsonPropertyName("id")]
         public int? ResultId { get; set; }
         [ForeignKey("eventId")]
+        [BsonElement("eventId")]
+        [JsonPropertyName("eventId")]
         public Event Event { get; set; }
         [ForeignKey("participantId")]
+        [BsonElement("participantId")]
+        [JsonPropertyName("participantId")]
         public Participant Participant { get; set; }
+        [BsonElement("resultValue")]
+        [JsonPropertyName("resultValue")]
         public decimal ResultValue { get; set; }
+        [BsonElement("position")]
+        [JsonPropertyName("position")]
         public int Position { get; set; }
 
         [BsonId]
         [NotMapped]
         [BsonIgnoreIfDefault]
-        public ObjectId? _id { get; set; }
+        [JsonPropertyName("_id")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public ObjectId? id { get; set; }
     }
 }
