@@ -1,6 +1,6 @@
 # The Starting Block V3.3
 
-This project is an API for managing events and participants called "The Starting Block". It provides endpoints to manage Events, Participants and Results.
+This project is an API called "The Starting Block". It provides endpoints to manage Events, Participants and Results.
 
 Functionality (V1) : the API includes the following features : CRUD operations for events including creation, retrieval, retrieval by ID, update and adding participants to events.
 
